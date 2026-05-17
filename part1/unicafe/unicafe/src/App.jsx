@@ -1,5 +1,44 @@
 import { useState } from 'react'
 
+const Statistics = (props) => {
+  if (props.totalStat === 0) {
+    return (
+      <div>
+      <h1>statistics</h1>
+        No feedback given
+      </div>
+    )
+  }
+  return (
+    <div>
+      <h1>statistics</h1>
+      <table>
+        <StatisticLine text="good" value={props.goodStat}/>
+        <StatisticLine text="neutral" value={props.neutralStat}/>
+        <StatisticLine text="bad" value={props.badStat}/>
+        <StatisticLine text="all" value={props.totalStat}/>
+        <StatisticLine text="average" value={Number(props.contStat/props.totalStat).toFixed(1)}/>
+        <StatisticLine text="positive" value={Number((props.goodStat/props.totalStat) * 100).toFixed(1)} unit='%'/>
+      </table>
+    </div>
+  )
+}
+
+const StatisticLine = (props) => {
+  return (
+      <tr>
+        <td>{props.text}</td> <td>{props.value} {props.unit}</td>
+      </tr>
+  )
+}
+
+const Button = (props) => (
+  <button onClick={props.onClick}>
+    {props.text}
+  </button>
+)
+
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
@@ -37,28 +76,14 @@ const App = () => {
     console.log('Cont- now', newValue)
     setCont(newValue)
   }
-
-
   return (
     <div>
       <h1>give feedback</h1>
-      <button onClick={() => setToGood(good + 1)}>
-        good
-      </button>
-      <button onClick={() => setToNeutral(neutral + 1)}>
-        neutral
-      </button>
-      <button onClick={() => setToBad(bad + 1)}>
-        bad
-      </button>
+      <Button onClick={() => setToGood(good + 1)} text='good'/>
+      <Button onClick={() => setToNeutral(neutral + 1)} text='neutral'/>
+      <Button onClick={() => setToBad(bad + 1)} text='bad'/>
+      <Statistics goodStat={good} neutralStat={neutral} badStat={bad} totalStat={total} contStat={cont}/>
 
-      <h1>statistics</h1>
-      <p>good {good}<br/>
-      neutral {neutral}<br/>
-      bad {bad}<br/>
-      all {total}<br/>
-      average {cont/total} <br/>
-      positive {(good/total) * 100} %<br/></p>
     </div>
   )
 }
