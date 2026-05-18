@@ -6,4 +6,4 @@ Exercises for the Full Stack Open program from the student this Github page belo
 | Parts | Completed |
 | ----- | --------- |
 | 0b    | 1-6       |
-|       |           |
+| 1     | 1-14      |
