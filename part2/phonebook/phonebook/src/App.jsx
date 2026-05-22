@@ -1,11 +1,6 @@
 import { useState } from 'react'
-
-const Name = (props) => {
-  console.log("Printed", props.person)
-  return (
-    <li>{ props.person } { props.number }</li>
-  )
-}
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -16,6 +11,7 @@ const App = () => {
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [showSearch, setShowSearch] = useState('')
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -50,24 +46,28 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleSearchChange = (event) => {
+    console.log('Search', event.target.value)
+    setShowSearch(event.target.value)
+  }
+
+  const namesToShow = (showSearch === '')
+    ? persons
+    : persons.filter(persons => persons.name.includes(showSearch) === true) // name_filter will be implemented in form
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>name: 
-          <input value={newName} onChange={handleNameChange}/></div>
-        <div>number: 
-          <input value={newNumber} onChange={handleNumberChange}/></div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
 
-      <h2>Numbers</h2>
-        <ul>
-        {persons.map((person, index) =>  (<Name key={index} person={person.name} number={person.number}/>))}
-        </ul>
+      <input value={showSearch} onChange={handleSearchChange}/>
+
+      <h3>add a new</h3>
+
+      <PersonForm addPerson={addPerson} newName={newName} handleNumberChange={handleNumberChange} handleNameChange={handleNameChange}/>
+
+      <h3>Numbers</h3>
+      
+      <Persons namesToShow={namesToShow} />
     </div>
   )
 }
