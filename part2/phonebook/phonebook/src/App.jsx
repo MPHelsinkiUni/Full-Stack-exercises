@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react'
 import Service from './services/comms'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
+import Success from './components/Success'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [showSearch, setShowSearch] = useState('')
-
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     Service
@@ -51,6 +54,12 @@ const App = () => {
 
         setNewName('')
         setNewNumber('')
+        setSuccessMessage(
+          'The person data was modified.'
+        )
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
       })
       return
     }
@@ -66,6 +75,12 @@ const App = () => {
         setPersons(persons.concat(newPerson))        
         setNewName('')   
         setNewNumber('')
+        setSuccessMessage(
+          'The person data was added.'
+        )
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
       })
 
   }
@@ -107,9 +122,12 @@ const App = () => {
       setNewNumber('')
     })
     .catch(error => {
-      alert(
-        `the name was already deleted from server`
-      )
+        setErrorMessage(
+          `The name was already deleted from server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
     })
 
     setPersons(person => person.filter(p => p.id !== id))      
@@ -117,15 +135,18 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+
+      <Notification message={errorMessage} />
+      <Success message={successMessage} />
 
       <input value={showSearch} onChange={handleSearchChange}/>
 
-      <h3>add a new</h3>
+      <h2>Add new contact</h2>
 
       <PersonForm addPerson={addPerson} newName={newName} handleNumberChange={handleNumberChange} handleNameChange={handleNameChange}/>
 
-      <h3>Numbers</h3>
+      <h2>Numbers</h2>
       
       <Persons removeName={removeName} namesToShow={namesToShow} />
     </div>

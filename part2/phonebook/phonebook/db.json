@@ -14,6 +14,21 @@
       "name": "Dan Abramov",
       "number": "12-43-234345",
       "id": "3"
+    },
+    {
+      "name": "Slim Shady",
+      "number": "124183412",
+      "id": "xWs-HrB2BIc"
+    },
+    {
+      "name": "Kendrick Lamar",
+      "number": "1124351",
+      "id": "bINTGYs6aOo"
+    },
+    {
+      "name": "Ursula K. Le Guin",
+      "number": "052-1583-8121",
+      "id": "nUlftK3oEco"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
