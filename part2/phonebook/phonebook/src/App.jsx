@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import Service from './services/comms'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
@@ -11,37 +11,35 @@ const App = () => {
 
 
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons') // Get something from here
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      }) // Then with the response, take that data, set it as persons through SetPersons
+    Service
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)      
+    })
   }, [])
   console.log('render', persons.length, 'persons')
 
   const addPerson = (event) => {
     event.preventDefault()
     console.log('button clicked', event.target)
-
     const nameExists = persons.some((person) => person.name.toLowerCase() === newName.toLowerCase())
-
     if (nameExists) {
       alert(newName + ' is already added to phonebook.')
       return
     }
-
     const nameObject = {
       name: newName,
       number: String(newNumber),
-      important: Math.random() > 0.5,
-      id: String(persons.length + 1),
+      id: persons.length + 1,
     }
-    setPersons(persons.concat(nameObject))
-    setNewName('')
-    setNewNumber('')
-    console.log(persons)
+    Service
+      .create(nameObject)
+      .then(newPerson => {
+        setPersons(persons.concat(newPerson))        
+        setNewName('')   
+        setNewNumber('')
+      })
+
   }
 
   const handleNameChange = (event) => {
@@ -59,9 +57,29 @@ const App = () => {
     setShowSearch(event.target.value)
   }
 
-  const namesToShow = (showSearch === '')
-    ? persons
-    : persons.filter(persons => persons.name.includes(showSearch) === true) // name_filter will be implemented in form
+  const namesToShow = (showSearch === '') ? persons : persons.filter(persons => persons.name.includes(showSearch) === true) // name_filter will be implemented in form
+
+  const removeName = (id) => {
+    const newList = persons.filter((question) => question.id !== id)
+
+    console.log('delete', id)
+    Service
+    .removal(id)
+    .then(response => {
+      console.log(response)
+      setPersons(newList)      
+      setNewName('')   
+      setNewNumber('')
+    })
+    .catch(error => {
+      alert(
+        `the name was already deleted from server`
+      )
+    })
+
+    setPersons(person => person.filter(p => p.id !== id))      
+  }
+
 
   return (
     <div>
@@ -75,7 +93,7 @@ const App = () => {
 
       <h3>Numbers</h3>
       
-      <Persons namesToShow={namesToShow} />
+      <Persons removeName={removeName} namesToShow={namesToShow} />
     </div>
   )
 }
