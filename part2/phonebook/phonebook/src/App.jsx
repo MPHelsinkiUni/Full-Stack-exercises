@@ -22,11 +22,39 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     console.log('button clicked', event.target)
-    const nameExists = persons.some((person) => person.name.toLowerCase() === newName.toLowerCase())
+    const nameExists = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase()
+  )
     if (nameExists) {
-      alert(newName + ' is already added to phonebook.')
+      const confirmUpdate = window.confirm(
+        newName + ' is already added to phonebook. Replace the old number with a new one?'
+      )
+    
+      if (!confirmUpdate) {
+        return
+      }
+
+      const updatedObject = {
+        ...nameExists,
+        number: String(newNumber)
+      }
+
+      Service
+      .update(nameExists.id, updatedObject)
+      .then(returnedPerson => {
+        setPersons(
+          persons.map(person =>
+            person.id !== nameExists.id
+              ? person
+              : returnedPerson
+          )
+        )
+
+        setNewName('')
+        setNewNumber('')
+      })
       return
     }
+
     const nameObject = {
       name: newName,
       number: String(newNumber),
@@ -59,8 +87,15 @@ const App = () => {
 
   const namesToShow = (showSearch === '') ? persons : persons.filter(persons => persons.name.includes(showSearch) === true) // name_filter will be implemented in form
 
-  const removeName = (id) => {
+  const removeName = (id, person) => {
     const newList = persons.filter((question) => question.id !== id)
+
+    const confirmDelete = window.confirm(
+        `Delete ${person || 'this person'}?`
+      )
+      if (!confirmDelete) {
+        return
+      }
 
     console.log('delete', id)
     Service
@@ -79,7 +114,6 @@ const App = () => {
 
     setPersons(person => person.filter(p => p.id !== id))      
   }
-
 
   return (
     <div>

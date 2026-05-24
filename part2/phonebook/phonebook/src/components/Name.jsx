@@ -4,7 +4,7 @@ const Name = (props) => {
     <tr>
       <td>{ props.person }</td>
       <td>{ props.number }</td>
-      <td><button id="deleteButton" value={props.id} onClick={() => props.removeName(props.id)}>delete</button></td>
+      <td><button id="deleteButton" person={props.person} value={props.id} onClick={() => props.removeName(props.id, props.person)}>delete</button></td>
     </tr>
   )
 }
