@@ -1,0 +1,246 @@
+{
+  "main": {
+    "id": "31e4416726e4ce16",
+    "type": "split",
+    "children": [
+      {
+        "id": "1dc33c0b5916f17c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "987e7f10fdb856ee",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "part0/0.5_single_page_app_diagram.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "0.5_single_page_app_diagram"
+            }
+          },
+          {
+            "id": "6c122a0403620ed4",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "fb5042171b9998c5",
+    "type": "split",
+    "children": [
+      {
+        "id": "5edc1948a1e4425e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "13492e6134e2094c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "1671810fb289047e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "977a77d2c05df1ab",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          },
+          {
+            "id": "ca4cecef22430d5c",
+            "type": "leaf",
+            "state": {
+              "type": "file-tree-view",
+              "state": {},
+              "icon": "sheets-in-box",
+              "title": "File Tree"
+            }
+          },
+          {
+            "id": "749483dadec16fec",
+            "type": "leaf",
+            "state": {
+              "type": "notebook-navigator",
+              "state": {},
+              "icon": "notebook-navigator",
+              "title": "Notebook Navigator"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 278.5
+  },
+  "right": {
+    "id": "a1b98abc6a6ed0f8",
+    "type": "split",
+    "children": [
+      {
+        "id": "117c56e05a662c82",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c494c983dac7e7d4",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "12a8c5bcdb6917e4",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "00cafab1569630a6",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "00d76ac04cfb7231",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "944e54980587a6de",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "file-tree-alternative:File Tree Alternative Plugin": false,
+      "obsidian-git:Open Git source control": false,
+      "obsidian-importer:Open Importer": false,
+      "notebook-navigator:Notebook Navigator": false
+    }
+  },
+  "active": "13492e6134e2094c",
+  "lastOpenFiles": [
+    "part1/instructional_do_not_grade/part1/package.json",
+    "part1/instructional_do_not_grade/part1/vite.config.js",
+    "part1/instructional_do_not_grade/part1/src/assets/vite.svg",
+    "part1/instructional_do_not_grade/part1/src/assets/react.svg",
+    "part1/instructional_do_not_grade/part1/src/assets/hero.png",
+    "part1/instructional_do_not_grade/part1/src/main.jsx",
+    "part1/instructional_do_not_grade/part1/src/index.css",
+    "part1/instructional_do_not_grade/part1/src/assets",
+    "part1/instructional_do_not_grade/part1/src/App.jsx",
+    "part1/instructional_do_not_grade/part1/src/App.css",
+    "part1/instructional_do_not_grade/part1/public/icons.svg",
+    "part1/instructional_do_not_grade/part1/public/favicon.svg",
+    "part1/instructional_do_not_grade/part1/src",
+    "part1/instructional_do_not_grade/part1/public",
+    "part1/instructional_do_not_grade/part1/index.html",
+    "part1/instructional_do_not_grade/part1/eslint.config.js",
+    "part1/instructional_do_not_grade/part1/README.md",
+    "part0/0.6_new_note_spa.md",
+    "part0/0.4_note_diagram.md",
+    "part0/0.5_single_page_app_diagram.md",
+    "README.md"
+  ]
+}
