@@ -51,7 +51,6 @@ const App = () => {
               : returnedPerson
           )
         )
-
         setNewName('')
         setNewNumber('')
         setSuccessMessage(
@@ -60,6 +59,15 @@ const App = () => {
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
+      })
+      .catch(error => {
+        setErrorMessage(
+          error.response.data.error
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        console.log(error.response.data.error)
       })
       return
     }
@@ -81,6 +89,15 @@ const App = () => {
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
+      })
+      .catch(error => {
+        setErrorMessage(
+          error.response.data.error
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        console.log(error.response.data.error)
       })
 
   }
@@ -154,5 +171,3 @@ const App = () => {
 }
 
 export default App
-
-// npm run server and npm run dev necessary
