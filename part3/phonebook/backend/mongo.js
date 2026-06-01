@@ -5,45 +5,41 @@ if (process.argv.length < 3) {
   process.exit(1)
 }
 
-if (process.argv.length == 5) {
-    const password = process.argv[2]
-    const name = process.argv[3]
-    const number = String(process.argv[4])
+const password = process.argv[2]
+const name = process.argv[3]
+const number = String(process.argv[4])
 
-    const url = `mongodb+srv://vothedat_db_user:${password}@cluster0.zz4fvgp.mongodb.net/phonebookApp?retryWrites=true&w=majority&appName=Cluster0`
+const url = `mongodb+srv://vothedat_db_user:${password}@cluster0.zz4fvgp.mongodb.net/phonebookApp?retryWrites=true&w=majority&appName=Cluster0`
 
-    mongoose.set('strictQuery',false)
+mongoose.set('strictQuery',false)
+mongoose.connect(url, { family: 4 })
 
-    mongoose.connect(url, { family: 4 })
+const personSchema = new mongoose.Schema({
+    name: String,
+    number: String
+})
 
-    const personSchema = new mongoose.Schema({
-        id: String,
-        name: String,
-        number: String
+const Person = mongoose.model('Person', personSchema)
+
+/*
+const person = new Person(
+    { 
+    "name": name, 
+    "number": number
     })
 
-    const Person = mongoose.model('Person', personSchema)
+person.save().then(result => {
+    loggy = 
+console.log('added', name, 'number', number, 'to phonebook')
+mongoose.connection.close()
+})
+*/
 
 
-    const person = new Person(
-        { 
-        "name": name, 
-        "number": number
-        })
-
-    person.save().then(result => {
-        loggy = 
-    console.log('added', name, 'number', number, 'to phonebook')
-    mongoose.connection.close()
-    })
-
-}
-
-if (process.argv.length == 3) {
-    Person.find({}).then(result => {
+Person.find({}).then(result => {
     result.forEach(person => {
         console.log(person)
     })
     mongoose.connection.close()
-    })
-}
+})
+
