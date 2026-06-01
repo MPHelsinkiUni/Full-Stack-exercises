@@ -6,48 +6,36 @@ if (process.argv.length < 3) {
 }
 
 const password = process.argv[2]
-const name = process.argv[3]
-const number = String(process.argv[4])
-
 const url = `mongodb+srv://vothedat_db_user:${password}@cluster0.zz4fvgp.mongodb.net/phonebookApp?retryWrites=true&w=majority&appName=Cluster0`
 
 mongoose.set('strictQuery',false)
 mongoose.connect(url, { family: 4 })
 
 const personSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      minLength: 5,
-      required: true
+  name: {
+    type: String,
+    minLength: [3, 'Length of name must be at least 3, got {VALUE}'],
+    required: [true, 'Please do not insert phone numbers with no owner']
+  },
+  number: {
+    type: String,
+    minLength: [8, 'Length of phone number must be at least 8, got {VALUE}'],
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d+$/.test(v)
+      },
+      message: props => `${props.value} is not a valid phone number!`
     },
-    number: {
-      type: String,
-      minLength: 8,
-      required: true
-    },
-  })
+    required: [true, 'Please do not insert names with no phone number']
+  },
+})
 
 const Person = mongoose.model('Person', personSchema)
 
-/*
-const person = new Person(
-    { 
-    "name": name, 
-    "number": number
-    })
-
-person.save().then(result => {
-    loggy = 
-console.log('added', name, 'number', number, 'to phonebook')
-mongoose.connection.close()
-})
-*/
-
-
 Person.find({}).then(result => {
-    result.forEach(person => {
-        console.log(person)
-    })
-    mongoose.connection.close()
+  result.forEach(person => {
+    console.log(person)
+  })
+  mongoose.connection.close()
 })
 
