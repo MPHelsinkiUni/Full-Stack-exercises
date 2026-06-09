@@ -10,23 +10,22 @@ const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialNotes)
+  await Blog.insertMany(helper.initialBlog)
 })
 
-describe('Test set one', () => {
-    test('GET request gets the blogs as json ', async () => {
+test('GET request gets the blogs as json ', async () => {
         await api
             .get('/api/blogs')
             .expect(200)
             .expect('Content-Type', /application\/json/)
     })
 
-    test('GET request gets the right amount of notes', async () => {
+test('GET request gets the right amount of notes', async () => {
         const response = await api.get('/api/blogs')
-        assert.strictEqual(response.body.length, 6)
+        assert.strictEqual(response.body.length, helper.initialBlog.length)
     })
 
-    after(async () => {
+after(async () => {
         await mongoose.connection.close()
     })
-})
+
