@@ -1,13 +1,11 @@
 const logger = require('./logger')
 
 const requestLogger = (request, response, next) => {
-  if (process.env.NODE_ENV !== 'test') { 
-    logger.info('Method:', request.method)
-    logger.info('Path:  ', request.path)
-    logger.info('Body:  ', request.body)
-    logger.info('---')
-    next()
-  }
+  logger.info('Method:', request.method)
+  logger.info('Path:  ', request.path)
+  logger.info('Body:  ', request.body)
+  logger.info('---')
+  next()
 }
 
 const unknownEndpoint = (request, response) => {
@@ -15,9 +13,7 @@ const unknownEndpoint = (request, response) => {
 }
 
 const errorHandler = (error, request, response, next) => {
-  if (process.env.NODE_ENV !== 'test') { 
-    logger.error(error.message)
-  }
+  logger.error(error.message)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
@@ -31,5 +27,5 @@ const errorHandler = (error, request, response, next) => {
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
 }
