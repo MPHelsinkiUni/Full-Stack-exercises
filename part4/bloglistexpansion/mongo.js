@@ -20,6 +20,13 @@ const blogSchema = mongoose.Schema({
 
 const Blog = mongoose.model('Blog', blogSchema)
 
+// Populate
+const usery = [
+  {
+
+  }
+]
+
 const bloggy = [
     {
       title: 'Go To Statement Considered Harmful',
