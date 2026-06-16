@@ -1,17 +1,28 @@
 const assert = require('node:assert')
+const bcrypt = require('bcrypt')
 const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+
 const app = require('../app')
 const helper = require('../utils/test_helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
 
+
 describe('Direct database tests', () => {
     beforeEach(async () => {
-    await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlog)
+        await Blog.deleteMany({})
+        await Blog.insertMany(helper.initialBlog)
+        await User.deleteMany({})
+
+        const passwordHash = await bcrypt.hash('sekret', 10)
+        const user = new User({ username: 'root', passwordHash })
+
+        await user.save()
+
     })
 
     describe('GET functions', () => {
@@ -32,35 +43,19 @@ describe('Direct database tests', () => {
             const response = await api.get('/api/blogs')
             assert.strictEqual(response.body.length, helper.initialBlog.length)
         })
-
-        test('POST request to add blog is functional', async () => {
-            const newBlog = {
-            title: 'Grifter 60-year-old yells at cloud again',
-            author: 'Dude is in a sex offender list',
-            url: 'https://www.youtube.com/watch?v=godhateswome',
-            likes: 16,
-            }
-
-            await api
-                .post('/api/blogs')
-                .send(newBlog)
-                .expect(201)
-                .expect('Content-Type', /application\/json/)
-
-            const response = await api.get('/api/blogs')
-            const contents = response.body.map(r => r.title)
-
-            assert.strictEqual(response.body.length, helper.initialBlog.length + 1)
-            assert(contents.includes('Grifter 60-year-old yells at cloud again'))
-        })
     })
 
     describe('POST function', () => {
         test('POST request to add blog works even if likes property is undefined', async () => {
+            const users = await api.get('/api/users')
+
+            const user = users.body[0]
+
             const newBlog = {
-            title: 'Grifter 60-year-old yells at cloud again',
-            author: 'Dude is in a sex offender list',
-            url: 'https://www.youtube.com/watch?v=godhateswome',
+                title: 'Grifter 60-year-old yells at cloud again',
+                author: 'Dude is in a sex offender list',
+                url: 'https://www.youtube.com/watch?v=godhateswome',
+                userId: user.id,
             }
 
             await api
@@ -94,6 +89,32 @@ describe('Direct database tests', () => {
             }
 
             await api.post('/api/blogs').send(newBlog).expect(400)
+        })
+
+        test('POST request to add blog is functional', async () => {
+            const users = await api.get('/api/users')
+
+            const user = users.body[0]
+
+            const newBlog = {
+                title: 'Grifter 60-year-old yells at cloud again',
+                author: 'Dude is in a sex offender list',
+                url: 'https://www.youtube.com/watch?v=godhateswome',
+                likes: 16,
+                userId: user.id
+            }
+
+            await api
+                .post('/api/blogs')
+                .send(newBlog)
+                .expect(201)
+                .expect('Content-Type', /application\/json/)
+
+            const response = await api.get('/api/blogs')
+            const contents = response.body.map(r => r.title)
+
+            assert.strictEqual(response.body.length, helper.initialBlog.length + 1)
+            assert(contents.includes('Grifter 60-year-old yells at cloud again'))
         })
     })
 
@@ -135,6 +156,102 @@ describe('Direct database tests', () => {
             assert.deepStrictEqual(blogReplace.body, updatedBlog)
 
         })
+    })
+})
+
+describe('User program testing', () => {
+    beforeEach(async () => {
+        await User.deleteMany({})
+
+        const passwordHash = await bcrypt.hash('sekret', 10)
+        const user = new User({ username: 'root', passwordHash })
+
+        await user.save()
+    })
+
+    test('Creation of new username', async () => {
+        const startUser = await helper.usersInDb()
+
+        const newUser = {
+            username: 'epage',
+            name: 'Ellison Page',
+            password: 'ihaterampricesihateramprices'
+        }
+
+        await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+        
+        const endUsers = await helper.usersInDb()
+        assert.strictEqual(endUsers.length, startUser.length + 1)
+
+        const usernames = endUsers.map(user => user.username)
+        assert(usernames.includes(newUser.username))
+    })
+
+    test('Throws statuscode if username is taken', async () => {
+        const startUser = await helper.usersInDb()
+
+        const newUser = {
+            username: 'root',
+            name: 'Superman',
+            password: 'secret'
+        }
+        
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+        
+        const endUser = await helper.usersInDb()
+        assert(result.body.error.includes('expected `username` to be unique'))
+
+        assert.strictEqual(endUser.length, startUser.length)
+    })
+
+    test('Throws statuscode if username is too short', async () => {
+        const startUser = await helper.usersInDb()
+
+        const newUser = {
+            username: 'ro',
+            name: 'Superman',
+            password: 'secret'
+        }
+        
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+        
+        const endUser = await helper.usersInDb()
+        assert(result.body.error.includes('is shorter than the minimum allowed length (3)'))
+
+        assert.strictEqual(endUser.length, startUser.length)
+    })
+
+    test('Throws statuscode if password is too short', async () => {
+        const startUser = await helper.usersInDb()
+
+        const newUser = {
+            username: 'rooter_tooter',
+            name: 'Superman',
+            password: 'se'
+        }
+        
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+        
+        const endUser = await helper.usersInDb()
+        assert(result.body.error.includes('User validation failed: password: Path `password` is shorter'))
+
+        assert.strictEqual(endUser.length, startUser.length)
     })
 })
 
