@@ -2,14 +2,8 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const { userExtractor } = require('../utils/middleware')
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user')
@@ -20,10 +14,11 @@ blogsRouter.get('/', async (request, response) => {
   }
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
   }
@@ -47,19 +42,41 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete("/:id", async (request, response) => {
-  /* middle of this: 
+blogsRouter.delete("/:id", userExtractor, async (request, response) => {
   const blog = await Blog.findById(request.params.id)
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
-  if( blog.user.toString() === userid.toString() )
-  */ 
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
 
+  if (!blog) {
+    return response.status(404).json({ error: 'blog missing or not valid' })
+  }
+
+  if( blog.user.toString() !== decodedToken.id.toString() ) {
+    return response.status(403).json({ error: 'unauthorised user' })
+  }
+  
   await Blog.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 
-blogsRouter.put('/:id', (request, response, next) => {
+blogsRouter.put('/:id', async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  if (!blog) {
+    return response.status(404).json({ error: 'blog missing or not valid' })
+  }
+
+  if( blog.user.toString() !== decodedToken.id.toString() ) {
+    return response.status(403).json({ error: 'unauthorised user' })
+  }
   const { title, author, url, likes } = request.body
 
   Blog.findById(request.params.id)

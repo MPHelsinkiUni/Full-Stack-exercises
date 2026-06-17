@@ -3,7 +3,6 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 usersRouter.post('/', async (request, response) => {
-  console.log(request.body)
   const username = request.body.username
   const name = request.body.name
   const password = request.body.password
