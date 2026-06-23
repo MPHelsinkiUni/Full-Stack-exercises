@@ -5,5 +5,5 @@ Content-Type: application/json
   "title": "Clean Code: The Good, the Bad and the Ugly",
   "author": "Daniel Gerlach",
   "url": "https://gerlacdt.github.io/blog/posts/clean_code/",
-  "likes": "0"
+  "likes": "0",
 }
