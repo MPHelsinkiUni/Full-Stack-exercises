@@ -99,21 +99,62 @@ const App = () => {
     )
   }
 
-  const addBlog = blogObject => {
+  const addBlog = async blogObject => {
     blogFormRef.current.toggleVisibility()
-    blogService.create(blogObject).then(returnedBlog => {
-      setBlogs(blogs.concat(returnedBlog))
+    const newBlog = await blogService.create(blogObject)
+    const newerBlog = {
+      ...newBlog,
+      user: user
+    }
+    setBlogs(blogs.concat(newerBlog))
+  }
+
+  const updateBlog = async (id, blogObject) => {
+    const returnedBlog = await blogService.update(id, blogObject)
+    
+    const updatedBlog = {
+      ...returnedBlog,
+      user: blogs.find(blog => blog.id === id).user
+    }
+    
+    setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedBlog))
+  }
+
+  const removeBlog = async (blogObject) => {
+    const newList = blogs.filter((blog) => blog.id !== blogObject.id)
+
+    const confirmDelete = window.confirm(
+        `Delete ${blogObject.title}?`
+      )
+      if (!confirmDelete) {
+        return
+      }
+
+    await blogService
+    .removal(blogObject.id)
+    .then(response => {
+      setBlogs(newList)
     })
+    .catch(error => {
+        setErrorMessage(
+          error.response.data.error
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+    })
+
+    setBlogs(blogs => blogs.filter(blog => blog.id !== blogObject.id))      
   }
 
   const blogsList = () => (
     <div>
       <h1>Recent blogs</h1>
-      {blogs.map(blog => (
-                <Blog key={blog.id} blog={blog} />
+      {blogs.sort((a, b) => b.likes - a.likes).map(blog => (
+                <Blog user={user} key={blog.id} blog={blog} likeUpdate={updateBlog} removeBlog={removeBlog}/>
       ))}
     </div>
-  )
+  )  
     return (
       <div>
         <Error message={errorMessage} />
