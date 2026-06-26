@@ -10,8 +10,8 @@ import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('') 
+  const [password, setPassword] = useState('') 
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
   const [user, setUser] = useState(null)
@@ -21,7 +21,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )
+    )  
   }, [])
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const App = () => {
       setPassword('')
       setSuccessMessage('Login successful')
       setTimeout(() => {
-        setErrorMessage(null)
+      setErrorMessage(null)
       }, 5000)
     } catch {
       setErrorMessage('Wrong credentials')
@@ -73,12 +73,12 @@ const App = () => {
       setPassword('')
       setSuccessMessage('Logout successful')
       setTimeout(() => {
-        setErrorMessage(null)
+      setErrorMessage(null)
       }, 5000)
     } catch {
       setErrorMessage('Logout issue. Please bother your local admin')
       setTimeout(() => {
-        setErrorMessage(null)
+      setErrorMessage(null)
       }, 5000)
     }
   }
@@ -111,12 +111,12 @@ const App = () => {
 
   const updateBlog = async (id, blogObject) => {
     const returnedBlog = await blogService.update(id, blogObject)
-
+    
     const updatedBlog = {
       ...returnedBlog,
       user: blogs.find(blog => blog.id === id).user
     }
-
+    
     setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedBlog))
   }
 
@@ -124,55 +124,55 @@ const App = () => {
     const newList = blogs.filter((blog) => blog.id !== blogObject.id)
 
     const confirmDelete = window.confirm(
-      `Delete ${blogObject.title}?`
-    )
-    if (!confirmDelete) {
-      return
-    }
+        `Delete ${blogObject.title}?`
+      )
+      if (!confirmDelete) {
+        return
+      }
 
     await blogService
-      .removal(blogObject.id)
-      .then(response => {
-        setBlogs(newList)
-      })
-      .catch(error => {
+    .removal(blogObject.id)
+    .then(response => {
+      setBlogs(newList)
+    })
+    .catch(error => {
         setErrorMessage(
           error.response.data.error
         )
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
-      })
+    })
 
-    setBlogs(blogs => blogs.filter(blog => blog.id !== blogObject.id))
+    setBlogs(blogs => blogs.filter(blog => blog.id !== blogObject.id))      
   }
 
   const blogsList = () => (
     <div>
       <h1>Recent blogs</h1>
       {blogs.sort((a, b) => b.likes - a.likes).map(blog => (
-        <Blog user={user} key={blog.id} blog={blog} likeUpdate={updateBlog} removeBlog={removeBlog}/>
+                <Blog user={user} key={blog.id} blog={blog} likeUpdate={updateBlog} removeBlog={removeBlog}/>
       ))}
     </div>
-  )
-  return (
-    <div>
-      <Error message={errorMessage} />
-      <Success message={successMessage} />
-      {!user && loginForm()}
-      {user && (
-        <div>
-          <h1>Blogs</h1>
-          <p>{user.name} logged in</p>
-          <button onClick={logOut} name="logout" type="button">Logout</button>
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog}/>
-          </Togglable>
-          {blogsList()}
-        </div>
-      )}
-    </div>
-  )
-}
+  )  
+    return (
+      <div>
+        <Error message={errorMessage} />
+        <Success message={successMessage} />
+        {!user && loginForm()}
+        {user && (
+          <div>
+            <h1>Blogs</h1>
+            <p>{user.name} logged in</p>
+            <button onClick={logOut} name="logout" type="button">Logout</button>
+            <Togglable buttonLabel="new blog" ref={blogFormRef}>
+              <BlogForm createBlog={addBlog}/>
+            </Togglable>
+            {blogsList()}
+          </div>
+          )}
+      </div>
+    )
+  }
 
 export default App
