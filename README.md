@@ -9,7 +9,7 @@ Exercises for the Full Stack Open program from the student this Github page belo
 | 1     | 1-14      |
 | 2     | 1-17      |
 | 3     | 1-22      |
-| 3     | 1-7       |
+| 4     | 1-23      |
 
 # Additional resources and notes
 Part 3 - phonebook - https://full-stack-exercises-fcw6.onrender.com/
