@@ -14,3 +14,4 @@ Exercises for the Full Stack Open program from the student this Github page belo
 # Additional resources and notes
 Part 3 - phonebook - https://full-stack-exercises-fcw6.onrender.com/
 Part 4 - hFunctions_uTests starts from bloglist.
+Part 5 - There are massive parallelism issues with the end-to-end testing where what happens in the test does not represent what the program looks or behaves like when actually using the frontend manually. Regardless, the tests are at least successful once, if not all of them at once.

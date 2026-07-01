@@ -107,11 +107,39 @@ describe('Blog app', () => {
       await expect(page.getByText('Blogde')).toHaveCount(0);
     })
 
-    /*
-    test('restricted only to the user who added the blog', async ({page}) => {
-
+    test('restricted only to the user who added the blog', async ({ page }) => {
+      const blogButton = page.locator('.blogitem').filter({ hasText: 'Aaaffa' })
+      console.log('7a')
+      await blogButton.getByRole('button', { name: 'Show details'}).click()
+      console.log('7b')
+      await expect(blogButton.locator('button:text("Remove blog")')).toHaveCount(0)
+      console.log('7c')
     })
-    */
+
+    test('blogs are presented in order of likes descending', async ({ page }) => {
+      const blogList = page.locator('.blogitem')
+      const length = await blogList.count()
+      console.log('8a')
+
+      for (let i = 0; i < length; i++) {
+        await blogList.nth(i).getByRole('button', { name: 'Show details '}).click()
+      }
+
+      console.log('8b')
+      const comparisonList = []
+
+      for (let i = 0; i < length; i++) {
+        const content = await blogList.nth(i).textContent()
+        const match = content?.match(/likes\s+(\d+)/)
+        expect(match).not.toBeNull()
+        comparisonList.push(Number(match[1]))
+      }
+
+      console.log('8c')
+      console.log(comparisonList, length)
+      expect(comparisonList).toEqual([...comparisonList].sort((a, b) => b - a))
+    })
+    
   })
     
 })
