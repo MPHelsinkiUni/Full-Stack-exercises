@@ -6,10 +6,6 @@ import Error from './components/Error'
 import Success from './components/Success'
 
 import LoginForm from './components/LoginForm'
-import BlogList from './components/BlogList'
-import Footer from './components/Footer'
-import Detail from './components/Detail'
-
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 
@@ -18,7 +14,7 @@ import loginService from './services/login'
 
 import {
   BrowserRouter as Router,
-  Routes, Route, Link, useNavigate
+  Routes, Route, Link
 } from 'react-router-dom'
 
 const App = () => {
@@ -59,7 +55,7 @@ const App = () => {
       setPassword('')
       setSuccessMessage('Login successful')
       setTimeout(() => {
-      setSuccessMessage(null)
+      setErrorMessage(null)
       }, 5000)
     } catch {
       setErrorMessage('Wrong credentials')
@@ -86,15 +82,31 @@ const App = () => {
       setPassword('')
       setSuccessMessage('Logout successful')
       setTimeout(() => {
-      setSuccessMessage(null)
+      setErrorMessage(null)
       }, 5000)
-      navigate("/")
     } catch {
       setErrorMessage('Logout issue. Please bother your local admin')
       setTimeout(() => {
       setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const loginForm = () => {
+    return (
+      <div>
+        <Togglable buttonLabel="login">
+          <div>
+            <h1>Login</h1>
+            <form onSubmit={handleLogin}>
+              <div><label>Username<input type="text" value={username} onChange={handleUsernameChange}/></label></div>
+              <div><label>Password<input type="password" value={password} onChange={handlePasswordChange}/></label></div>
+              <button type="submit">login</button>
+            </form>
+          </div>
+        </Togglable>
+      </div>
+    )
   }
 
   const addBlog = async blogObject => {
@@ -145,30 +157,33 @@ const App = () => {
     setBlogs(blogs => blogs.filter(blog => blog.id !== blogObject.id))      
   }
 
-  const padding = {
-    padding: 5
-  }
-   
-  return (
+  const blogsList = () => (
     <div>
-      <Error message={errorMessage} />
-      <Success message={successMessage} />
-      <Router>
-        <div>
-          <Link style={padding} to="/">Blogs</Link>
-          {!user && <Link style={padding} to="/login">Login</Link>}
-          {user && <button onClick={logOut} name="logout" type="button">Logout</button>}
-        </div>
-        <Routes>
-          <Route path="/" element={<BlogList blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog} setBlogs={setBlogs} setUser={setUser} setErrorMessage={setErrorMessage} setSuccessMessage={setSuccessMessage} />} />
-          <Route path="/blogs/:id" element={<Detail blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog} setBlogs={setBlogs} setUser={setUser} setErrorMessage={setErrorMessage} setSuccessMessage={setSuccessMessage} />} />
-          {!user && <Route path="/login" element={<LoginForm handleLogin={handleLogin} handleUsernameChange={handleUsernameChange} handlePasswordChange={handlePasswordChange} username={username} password={password} /> } />}
-        </Routes>
-        <Footer />
-      </Router>
+      <h1>Recent blogs</h1>
+      {blogs.sort((a, b) => b.likes - a.likes).map(blog => (
+                <Blog user={user} key={blog.id} blog={blog} likeUpdate={updateBlog} removeBlog={removeBlog}/>
+      ))}
     </div>
-  )
-    
+  )  
+
+    return (
+      <div>
+        <Error message={errorMessage} />
+        <Success message={successMessage} />
+        {!user && loginForm()}
+        {user && (
+          <div>
+            <h1>Blogs</h1>
+            <p>{user.name} logged in</p>
+            <button onClick={logOut} name="logout" type="button">Logout</button>
+            <Togglable buttonLabel="new blog" ref={blogFormRef}>
+              <BlogForm createBlog={addBlog}/>
+            </Togglable>
+            {blogsList()}
+          </div>
+          )}
+      </div>
+    )
   }
 
 export default App

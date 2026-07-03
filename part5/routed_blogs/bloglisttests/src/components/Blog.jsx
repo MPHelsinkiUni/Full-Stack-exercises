@@ -1,16 +1,19 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-const Blog = ({ user, blog, likeUpdate, removeBlog }) => {
+const Blog = ({ user, blog, updateBlog, removeBlog }) => {
   const [detailVisible, setDetailVisibility] = useState(false)
   const hideWhenVisible = { display: detailVisible ? 'none' : '' }
   const showWhenVisible = { display: detailVisible ? '' : 'none' }
-  const owner = user.username === blog.user.username
+  const login = user !== null
+  const owner = login && user.username === blog.user.username
+  const showWhenLogin = { display: login ? '' : 'none' }
   const showWhenOwner = { display: owner ? '' : 'none' }
 
 
   const likeUp = event => {
     event.preventDefault()
-    likeUpdate(blog.id, {
+    updateBlog(blog.id, {
       user: blog.user.id,
       title: blog.title,
       author: blog.author,
@@ -26,14 +29,16 @@ const Blog = ({ user, blog, likeUpdate, removeBlog }) => {
 
   return (
     <div className="blogitem">
-      <b>{blog.title}</b> by {blog.author} <br/>
+      <b><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></b> by {blog.author} <br/>
       <div style={hideWhenVisible}>
         <button onClick={() => setDetailVisibility(true)}>Show details</button>
       </div>
       <div style={showWhenVisible}>
         {blog.url}<br/>
         likes {blog.likes}
-        <button onClick={likeUp}>like</button>
+        <div style={showWhenLogin}>
+          <button onClick={likeUp}>like</button>
+        </div>
         <br/>
         {blog.user.username}
         <br/>
