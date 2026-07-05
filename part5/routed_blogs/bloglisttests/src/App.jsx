@@ -9,9 +9,9 @@ import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import Footer from './components/Footer'
 import Detail from './components/Detail'
+import BlogForm from './components/BlogForm'
 
 import Togglable from './components/Togglable'
-import BlogForm from './components/BlogForm'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -28,8 +28,6 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
   const [user, setUser] = useState(null)
-
-  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -88,8 +86,7 @@ const App = () => {
       setTimeout(() => {
       setSuccessMessage(null)
       }, 5000)
-      navigate("/")
-    } catch {
+    } catch (error) {
       setErrorMessage('Logout issue. Please bother your local admin')
       setTimeout(() => {
       setErrorMessage(null)
@@ -98,7 +95,6 @@ const App = () => {
   }
 
   const addBlog = async blogObject => {
-    blogFormRef.current.toggleVisibility()
     const newBlog = await blogService.create(blogObject)
     const newerBlog = {
       ...newBlog,
@@ -157,12 +153,14 @@ const App = () => {
         <div>
           <Link style={padding} to="/">Blogs</Link>
           {!user && <Link style={padding} to="/login">Login</Link>}
+          {user && <Link style={padding} to="/create">Create blog</Link>}
           {user && <button onClick={logOut} name="logout" type="button">Logout</button>}
         </div>
         <Routes>
           <Route path="/" element={<BlogList blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog} setBlogs={setBlogs} setUser={setUser} setErrorMessage={setErrorMessage} setSuccessMessage={setSuccessMessage} />} />
           <Route path="/blogs/:id" element={<Detail blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog} setBlogs={setBlogs} setUser={setUser} setErrorMessage={setErrorMessage} setSuccessMessage={setSuccessMessage} />} />
           {!user && <Route path="/login" element={<LoginForm handleLogin={handleLogin} handleUsernameChange={handleUsernameChange} handlePasswordChange={handlePasswordChange} username={username} password={password} /> } />}
+          <Route path="/create" element={<BlogForm createBlog={addBlog} setErrorMessage={setErrorMessage}/>} />
         </Routes>
         <Footer />
       </Router>

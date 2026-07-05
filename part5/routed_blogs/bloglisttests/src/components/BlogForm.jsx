@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ createBlog, setErrorMessage }) => {
     const [title, setTitle] = useState('') 
     const [author, setAuthor] = useState('') 
     const [url, setUrl] = useState('')
     const [likes, setLikes] = useState('')
+    const navigate = useNavigate()
 
     const handleTitleChange = event => {
         setTitle(event.target.value)
@@ -22,20 +24,31 @@ const BlogForm = ({ createBlog }) => {
         setLikes(event.target.value)
     }
 
-    const addBlog = event => {
-        event.preventDefault()
-        createBlog({
-            title: title,
-            author: author,
-            url: url,
-            likes: likes
-        })
-        
-        setUrl('')
-        setTitle('')
-        setLikes('')
-        setAuthor('')
-        } 
+    const addBlog = async (event) => {
+        try {
+            event.preventDefault()
+            await createBlog({
+                title: title,
+                author: author,
+                url: url,
+                likes: likes
+            })
+            setUrl('')
+            setTitle('')
+            setLikes('')
+            setAuthor('')
+
+            navigate('/')
+        } catch (error) {
+            console.log(error)
+            setErrorMessage(
+                error.response.data.error
+                )
+            setTimeout(() => {
+                setErrorMessage(null)
+            }, 5000)
+        }
+    } 
 
     return (
         <div>

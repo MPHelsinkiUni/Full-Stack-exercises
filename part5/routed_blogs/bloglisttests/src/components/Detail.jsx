@@ -42,11 +42,12 @@ const Detail = ({ blogs, user, updateBlog, removeBlog, setBlogs, setUser, setErr
             {blog.user.username}
             <br/>
             <h3>Operations:</h3>
+            {!user && (<div>Login to interact with the blog operations.</div>)}
             <div style={showWhenOwner}>
             <button onClick={remove}>Remove blog</button>
             </div>
             <div style={showWhenLogin}>
-            <button onClick={likeUp}>like</button>
+            <button onClick={likeUp}>Like</button>
             </div>
         </div>
         </div>  
