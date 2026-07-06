@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
+import { Card, Box, CardActions, CardContent, Button, Typography } from '@mui/material'
 
-const Detail = ({ blogs, user, updateBlog, removeBlog, setBlogs, setUser, setErrorMessage, setSuccessMessage }) => {
+const Detail = ({ blogs, user, updateBlog, removeBlog, setBlogs, setUser }) => {
     const id = useParams().id
     const navigate = useNavigate()
     const blog = blogs.find(n => n.id === id)
@@ -33,24 +34,31 @@ const Detail = ({ blogs, user, updateBlog, removeBlog, setBlogs, setUser, setErr
     }
 
     return (
-        <div className="blogitem">
-        <h2><b>{blog.title}</b> by {blog.author} <br/></h2>
-        <div>
-            <h3>URL:</h3>{blog.url}
-            <h3>Likes:</h3>{blog.likes}
-            <h3>Poster:</h3>
-            {blog.user.username}
-            <br/>
-            <h3>Operations:</h3>
-            {!user && (<div>Login to interact with the blog operations.</div>)}
-            <div style={showWhenOwner}>
-            <button onClick={remove}>Remove blog</button>
-            </div>
-            <div style={showWhenLogin}>
-            <button onClick={likeUp}>Like</button>
-            </div>
-        </div>
-        </div>  
+        <Box>
+            <Card>
+                <CardContent>
+                    <Typography variant="h5" component="div"><b>{blog.title}</b> by {blog.author} <br/></Typography>
+                    <div>
+                        <Typography variant="h6" component="div">
+                            <ul>
+                                <li>URL: {blog.url}</li>
+                                <li>Likes: {blog.likes}</li>
+                                <li>Poster: {blog.user.username}</li>
+                            </ul>
+                        <br/>
+                        </Typography>
+                        {!user && (<div>Login to interact with the blog operations.</div>)}
+                        <div style={showWhenOwner}>
+                        <Button onClick={remove}>Remove blog</Button>
+                        </div>
+                        <div style={showWhenLogin}>
+                        <Button onClick={likeUp}>Like</Button>
+                        </div>
+                    </div>
+
+                </CardContent>
+            </Card>
+        </Box>
     )
 }
 

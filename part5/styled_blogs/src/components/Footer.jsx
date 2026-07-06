@@ -1,15 +1,21 @@
+import styled from 'styled-components'
+
 const Footer = () => {
-  const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic'
-  }
+  const Foot = styled.div`
+    background: #2196f3;
+    color: White;
+    font-style: Italic;
+    padding: 1em;
+    margin-top: 1em;
+    text-align: center;
+  `
 
   return (
-    <div style={footerStyle}>
+    <div>
       <br />
-      <p>
+      <Foot>
         Blog app, Department of Computer Science, University of Helsinki 2026
-      </p>
+      </Foot>
     </div>
   )
 }

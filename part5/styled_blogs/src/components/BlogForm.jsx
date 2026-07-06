@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { TextField, Button } from '@mui/material'
 
-const BlogForm = ({ createBlog, setErrorMessage }) => {
+const BlogForm = ({ createBlog, setNotification }) => {
     const [title, setTitle] = useState('') 
     const [author, setAuthor] = useState('') 
     const [url, setUrl] = useState('')
@@ -42,12 +42,11 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
             navigate('/')
         } catch (error) {
             console.log(error)
-            setErrorMessage(
-                error.response.data.error
-                )
+            setNotification({ text: `${error.response.data.error}`, type: 'success' })      
             setTimeout(() => {
-                setErrorMessage(null)
-            }, 5000)
+                setNotification(null)
+                }, 5000
+            )
         }
     } 
 

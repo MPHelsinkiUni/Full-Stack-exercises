@@ -1,15 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import { Container } from '@mui/material'
-import Error from './components/Error'
-import Success from './components/Success'
+import { Container, AppBar, Toolbar, Button } from '@mui/material'
 
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import Footer from './components/Footer'
 import Detail from './components/Detail'
 import BlogForm from './components/BlogForm'
-
-import Togglable from './components/Togglable'
+import Notification from './components/Notification'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -23,8 +20,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -53,15 +49,20 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setSuccessMessage('Login successful')
+      setNotification({ text: `Login successful! Welcome ${username}`, type: 'success' })      
+      setTimeout(() => {
+        setNotification(null)
+        }, 5000
+      )
       setTimeout(() => {
       setSuccessMessage(null)
       }, 5000)
     } catch {
-      setErrorMessage('Wrong credentials')
+      setNotification({ text: `Bad credentials! Check your password or username`, type: 'error' })      
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+        setNotification(null)
+        }, 5000
+      )
     }
   }
 
@@ -80,15 +81,17 @@ const App = () => {
       setUser(null)
       setUsername('')
       setPassword('')
-      setSuccessMessage('Logout successful')
+      setNotification({ text: `Logout successful!`, type: 'success' })      
       setTimeout(() => {
-      setSuccessMessage(null)
-      }, 5000)
+        setNotification(null)
+        }, 5000
+      )
     } catch (error) {
-      setErrorMessage('Logout issue. Please bother your local admin')
+      setNotification({ text: `Logout issue. Please bother your local admin!`, type: 'error' })      
       setTimeout(() => {
-      setErrorMessage(null)
-      }, 5000)
+        setNotification(null)
+        }, 5000
+      )
     }
   }
 
@@ -126,14 +129,18 @@ const App = () => {
     .removal(blogObject.id)
     .then(response => {
       setBlogs(newList)
+      setNotification({ text: `Removal of blog successful!`, type: 'success' })      
+      setTimeout(() => {
+        setNotification(null)
+        }, 5000
+      )
     })
     .catch(error => {
-        setErrorMessage(
-          error.response.data.error
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+      setNotification({ text: `Error: ${error.response.data.error}`, type: 'error' })      
+      setTimeout(() => {
+        setNotification(null)
+        }, 5000
+      )
     })
 
     setBlogs(blogs => blogs.filter(blog => blog.id !== blogObject.id))      
@@ -146,27 +153,28 @@ const App = () => {
   const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
   
   return (
-    <Container>
-    <div>
-      <Error message={errorMessage} />
-      <Success message={successMessage} />
-      <Router>
-        <div>
-          <Link style={padding} to="/">Blogs</Link>
-          {!user && <Link style={padding} to="/login">Login</Link>}
-          {user && <Link style={padding} to="/create">Create blog</Link>}
-          {user && <button onClick={logOut} name="logout" type="button">Logout</button>}
-        </div>
+    <Router>
+      <Container>
+        <Notification notification={notification} />
+        
+        <AppBar position="static">
+          <Toolbar>
+            <Button color="inherit" component={Link} to="/" sx={style}>Blogs</Button>
+            {!user && <Button color="inherit" component={Link} to="/login" sx={style}>Login</Button>}
+            {user && <Button color="inherit" component={Link} to="/create" sx={style}>Create blog</Button>}
+            {user && <Button color="inherit" component={() => {logOut}} sx={style}>Create blog</Button>}
+          </Toolbar>
+        </AppBar>
+
         <Routes>
-          <Route path="/" element={<BlogList blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog} setBlogs={setBlogs} setUser={setUser} setErrorMessage={setErrorMessage} setSuccessMessage={setSuccessMessage} />} />
-          <Route path="/blogs/:id" element={<Detail blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog} setBlogs={setBlogs} setUser={setUser} setErrorMessage={setErrorMessage} setSuccessMessage={setSuccessMessage} />} />
+          <Route path="/" element={<BlogList blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog} setBlogs={setBlogs} setUser={setUser} />} />
+          <Route path="/blogs/:id" element={<Detail blogs={blogs} user={user} updateBlog={updateBlog} removeBlog={removeBlog} setBlogs={setBlogs} setUser={setUser} />} />
           {!user && <Route path="/login" element={<LoginForm handleLogin={handleLogin} handleUsernameChange={handleUsernameChange} handlePasswordChange={handlePasswordChange} username={username} password={password} /> } />}
-          <Route path="/create" element={<BlogForm createBlog={addBlog} setErrorMessage={setErrorMessage}/>} />
+          <Route path="/create" element={<BlogForm createBlog={addBlog} setNotification={setNotification}/>} />
         </Routes>
         <Footer />
-      </Router>
-    </div>
-    </Container>
+      </Container>
+    </Router>
   )
     
   }
