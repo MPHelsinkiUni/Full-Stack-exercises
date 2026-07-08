@@ -1,4 +1,3 @@
-
 import { create } from 'zustand'
 
 const anecdotesAtStart = [
@@ -20,6 +19,7 @@ const asObject = anecdote => ({
 
 const useAnecdoteStore = create((set) => ({
   anecdotes: anecdotesAtStart.map(asObject),
+  term: '',
   actions: {
     vote: id => set(
       state => ({
@@ -30,9 +30,11 @@ const useAnecdoteStore = create((set) => ({
     ),
     add: value => set(
       state => ({ anecdotes: state.anecdotes.concat(asObject(value)) })
-    )
+    ),
+    query: value => set(() => ({ term: value }))
   },
 }))
 
 export const useAnecdotes = () => useAnecdoteStore((state) => state.anecdotes)
+export const useQuery = () => useAnecdoteStore((state) => state.term)
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)

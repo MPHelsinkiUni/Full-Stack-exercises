@@ -1,8 +1,11 @@
-import { useAnecdotes, useAnecdoteActions } from '../store'
+import { useAnecdotes, useAnecdoteActions, useQuery } from '../store'
 
 const AnecdoteList = () => {
     const anecdotes = useAnecdotes()
-    const sortedAnecdotes = anecdotes.toSorted((a, b) => b.votes - a.votes)
+    const term = useQuery()
+    const filterAnecdotes = anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(term.toLowerCase()))
+    const sortedAnecdotes = filterAnecdotes.toSorted((a, b) => b.votes - a.votes)
+
     const {vote} = useAnecdoteActions()
 
     const voteId = id => {
