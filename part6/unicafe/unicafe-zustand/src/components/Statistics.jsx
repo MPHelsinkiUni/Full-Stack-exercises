@@ -3,7 +3,7 @@ import { useCounter } from './store'
 const Statistics = () => {
   const { good, neutral, bad } = useCounter()
   const all = good + neutral + bad
-  const average = (good + neutral + bad)/3
+  const average = ((good + neutral + bad)/3).toFixed(2)
   const positive = ((good / all)*100).toFixed(2)
   return (
     <div>
