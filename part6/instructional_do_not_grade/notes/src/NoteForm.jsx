@@ -5,10 +5,10 @@ const generateId = () => Number((Math.random() * 1000000).toFixed(0))
 const NoteForm = () => {
   const { add } = useNoteActions()
 
-  const addNote = (e) => {
+  const addNote = async (e) => {
     e.preventDefault()
     const content = e.target.note.value
-    add({ id: generateId(), content, important: false })
+    await add(content)
     e.target.reset()
   }
 

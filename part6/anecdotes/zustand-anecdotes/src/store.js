@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import anecdoteService from './services/anecdotes'
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -17,21 +18,25 @@ const asObject = anecdote => ({
   votes: 0
 })
 
-const useAnecdoteStore = create((set) => ({
-  anecdotes: anecdotesAtStart.map(asObject),
+const useAnecdoteStore = create((set, get) => ({
+  anecdotes: [],
   term: '',
   actions: {
-    vote: id => set(
-      state => ({
-        anecdotes: state.anecdotes.map(anecdote =>
-          anecdote.id === id ? {...anecdote, votes: anecdote.votes + 1} : anecdote
+    vote: async id => {
+      const anecdoteToUpdate = get().anecdotes.find(n => n.id === id)
+      const updated = await anecdoteService.update(
+        id, {...anecdoteToUpdate, votes: anecdoteToUpdate.votes + 1 }
+      )
+      set(state => ({anecdotes: state.anecdotes.map(anecdote => anecdote.id === id ? {...anecdote, votes: anecdote.votes + 1} : anecdote
         ) 
-      })
-    ),
-    add: value => set(
-      state => ({ anecdotes: state.anecdotes.concat(asObject(value)) })
-    ),
-    query: value => set(() => ({ term: value }))
+      }))
+    },
+    add: async value => {
+      const newAnecdote = await anecdoteService.createNew(value)
+      set(state => ({ anecdotes: state.anecdotes.concat(asObject(newAnecdote)) }))
+    },
+    query: value => set(() => ({ term: value })),
+    initialize: anecdotes => set(() => ({ anecdotes }))
   },
 }))
 
