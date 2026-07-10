@@ -21,6 +21,7 @@ const asObject = anecdote => ({
 const useAnecdoteStore = create((set, get) => ({
   anecdotes: [],
   term: '',
+  notification: '',
   actions: {
     vote: async id => {
       const anecdoteToUpdate = get().anecdotes.find(n => n.id === id)
@@ -36,10 +37,24 @@ const useAnecdoteStore = create((set, get) => ({
       set(state => ({ anecdotes: state.anecdotes.concat(asObject(newAnecdote)) }))
     },
     query: value => set(() => ({ term: value })),
-    initialize: anecdotes => set(() => ({ anecdotes }))
+    initialize: async () => {
+      const anecdotes = await anecdoteService.getAll() 
+      set(() => ({ anecdotes }))
+    },
+    setNotification: async value => {
+      set({ notification: value })
+      setTimeout(() => {
+        set({ notification: '' })
+      }, 5000)
+    },
+    remove: async value => {
+      const deleteAnecdote = await anecdoteService.remove(value)
+      set(state => ({ anecdotes: state.anecdotes.filter(anecdote => anecdote.id !== value) }))
+    }
   },
 }))
 
 export const useAnecdotes = () => useAnecdoteStore((state) => state.anecdotes)
 export const useQuery = () => useAnecdoteStore((state) => state.term)
+export const useNotification = () => useAnecdoteStore((state) => state.notification)
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)
