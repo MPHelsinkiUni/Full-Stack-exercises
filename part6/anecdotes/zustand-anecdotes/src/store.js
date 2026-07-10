@@ -54,7 +54,16 @@ const useAnecdoteStore = create((set, get) => ({
   },
 }))
 
-export const useAnecdotes = () => useAnecdoteStore((state) => state.anecdotes)
+export const useAnecdotes = () => {
+  const anecdotes = useAnecdoteStore((state) => state.anecdotes)
+  const filterTerm = useAnecdoteStore((state) => state.term)
+  if (filterTerm === '') {return anecdotes} else {return anecdotes.filter(anecdote =>
+      anecdote.content.toLowerCase().includes(filterTerm.toLowerCase())
+    )
+  }
+}
 export const useQuery = () => useAnecdoteStore((state) => state.term)
 export const useNotification = () => useAnecdoteStore((state) => state.notification)
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)
+
+export default useAnecdoteStore
