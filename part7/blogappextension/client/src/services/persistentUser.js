@@ -1,15 +1,14 @@
 const getUser = () => {
-    return window.localStorage.getItem("loggedBlogappUser")
-}
+  return window.localStorage.getItem("loggedBlogappUser");
+};
 const saveUser = (user) => {
-    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-}
+  window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+};
 const removeUser = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-}
+  window.localStorage.removeItem("loggedBlogappUser");
+};
 const clearAll = () => {
-    window.localStorage.clear()
-}
+  window.localStorage.clear();
+};
 
-
-export default { getUser, saveUser, removeUser, clearAll }
+export default { getUser, saveUser, removeUser, clearAll };

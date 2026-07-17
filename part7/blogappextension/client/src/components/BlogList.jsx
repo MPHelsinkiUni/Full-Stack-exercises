@@ -1,22 +1,13 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
 import Blog from "./Blog";
 
-const BlogList = ({
-  blogs
-}) => {
+const BlogList = ({ blogs }) => {
   const blogsList = () => (
     <div>
       <h2>Recent blogs</h2>
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <Blog
-            user={blog.user}
-            key={blog.id}
-            blog={blog}
-          />
+          <Blog user={blog.user} key={blog.id} blog={blog} />
         ))}
     </div>
   );

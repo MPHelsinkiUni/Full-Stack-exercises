@@ -11,14 +11,14 @@ import {
 } from "@mui/material";
 
 const Detail = ({ blogs }) => {
-  const { updateBlog, removeBlog } = useStoreActions()
+  const { updateBlog, removeBlog } = useStoreActions();
   const id = useParams().id;
   const navigate = useNavigate();
   const blog = blogs.find((n) => n.id === id);
   if (!blog) {
     return <div>Loading. Please return to homepage before refreshing</div>;
   }
-  const user = useKeptUsername
+  const user = useKeptUsername;
   const login = user !== null;
   const owner = login && user.username === blog.user.username;
   const showWhenLogin = { display: login ? "" : "none" };

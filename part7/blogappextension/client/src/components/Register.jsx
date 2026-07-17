@@ -3,35 +3,46 @@ import { useStoreActions } from "../store";
 import { useNavigate } from "react-router-dom";
 import { useField } from "../hooks";
 
-const LoginForm = () => {
+const Register = () => {
   const username = useField("text");
+  const name = useField("text");
   const password = useField("password");
   const navigate = useNavigate();
-  const { login } = useStoreActions();
+  const { register } = useStoreActions();
 
-  const handleLogin = (event) => {
-    const response = login(event);
-    if (response) {
+  const handleRegister = async (event) => {
+    event.preventDefault();
+
+    const success = await register({
+      username: username.value,
+      name: name.value,
+      password: password.value,
+    });
+
+    if (success) {
       navigate("/");
     }
   };
 
   return (
     <div>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
+      <h1>Registration</h1>
+      <form onSubmit={handleRegister}>
         <div>
           <TextField {...username} label="Username" id="username" />
+        </div>
+        <div>
+          <TextField {...name} label="Name" id="name" />
         </div>
         <div>
           <TextField {...password} label="Password" id="password" />
         </div>
         <Button type="submit" variant="contained" style={{ marginTop: 10 }}>
-          login
+          register
         </Button>
       </form>
     </div>
   );
 };
 
-export default LoginForm;
+export default Register;

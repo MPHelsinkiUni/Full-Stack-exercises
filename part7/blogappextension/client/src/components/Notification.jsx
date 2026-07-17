@@ -2,7 +2,7 @@ import { Alert } from "@mui/material";
 import { useNotification } from "../store";
 
 const Notification = () => {
-  const notification = useNotification()
+  const notification = useNotification();
 
   if (notification.text === null) {
     return null;

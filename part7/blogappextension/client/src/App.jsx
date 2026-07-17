@@ -9,19 +9,15 @@ import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import ErrorBoundary from "./components/ErrorBoundary";
 import BadPath from "./components/BadPath";
+import Register from "./components/Register";
 import { useStoreActions, useBlogsListing, useKeptUsername } from "./store";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 const App = () => {
   const blogs = useBlogsListing();
-  const { setNotification, initialize, setUser, logOut } = useStoreActions()
-  const loggedinUser = useKeptUsername()
+  const { setNotification, initialize, setUser, logOut } = useStoreActions();
+  const loggedinUser = useKeptUsername();
 
   useEffect(() => {
     initialize();
@@ -49,6 +45,16 @@ const App = () => {
                   Login
                 </Button>
               )}
+              {!loggedinUser && (
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/register"
+                  sx={style}
+                >
+                  Register
+                </Button>
+              )}
               {loggedinUser && (
                 <Button
                   color="inherit"
@@ -60,12 +66,7 @@ const App = () => {
                 </Button>
               )}
               {loggedinUser && (
-                <Button
-                  color="inherit"
-                  onClick={logOut}
-                  to="/"
-                  sx={style}
-                >
+                <Button color="inherit" onClick={logOut} to="/" sx={style}>
                   Logout
                 </Button>
               )}
@@ -77,9 +78,7 @@ const App = () => {
               path="/"
               element={
                 <ErrorBoundary>
-                  <BlogList
-                    blogs={blogs}
-                  />
+                  <BlogList blogs={blogs} />
                 </ErrorBoundary>
               }
             />
@@ -87,9 +86,7 @@ const App = () => {
               path="/blogs/:id"
               element={
                 <ErrorBoundary>
-                  <Detail
-                    blogs={blogs}
-                  />
+                  <Detail blogs={blogs} />
                 </ErrorBoundary>
               }
             />
@@ -98,7 +95,7 @@ const App = () => {
                 path="/login"
                 element={
                   <ErrorBoundary>
-                    <LoginForm/>
+                    <LoginForm />
                   </ErrorBoundary>
                 }
               />
@@ -107,9 +104,15 @@ const App = () => {
               path="/create"
               element={
                 <ErrorBoundary>
-                  <BlogForm
-                    user={loggedinUser}
-                  />
+                  <BlogForm user={loggedinUser} />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <ErrorBoundary>
+                  <Register />
                 </ErrorBoundary>
               }
             />
