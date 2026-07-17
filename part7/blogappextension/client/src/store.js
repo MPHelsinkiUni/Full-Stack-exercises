@@ -1,19 +1,18 @@
 import { create } from 'zustand'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import persistentUser from './services/persistentUser'
 
 const useBlogStore = create((set, get) => ({
     blogs: [],
     user: null,
-    username: '',
-    password: '',
     notification: { text: null, type: null },
     actions: {
         initialize: async () => {
             const blogs = await blogService.getAll()
             set(() => ({ blogs }))
 
-            const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+            const loggedUserJSON = persistentUser.getUser();
             if (loggedUserJSON) {
                 const userStr = JSON.parse(loggedUserJSON);
                 set({ user: userStr })
@@ -74,17 +73,13 @@ const useBlogStore = create((set, get) => ({
         },
         login: async (event) => {
             event.preventDefault();
-            const username = get().username
-            const password = get().password
             try {
-                const user = await loginService.login({ username, password });
-                window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+                const user = await loginService.login({ username: event.target.username.value, password: event.target.password.value });
+                persistentUser.saveUser(user);
                 blogService.setToken(user.token);
                 set({ user: user });
-                set({ username: '' });
-                set({ password: '' });
                 get().actions.setNotification({
-                    text: `Login successful! Welcome ${username}`,
+                    text: `Login successful! Welcome ${event.target.username.value}`,
                     type: "success",
                 });
                 return true;
@@ -98,11 +93,9 @@ const useBlogStore = create((set, get) => ({
         },
         logOut: async (event) => {
             try {
-                window.localStorage.removeItem("loggedBlogappUser");
-                window.localStorage.clear();
+                persistentUser.removeUser();
+                persistentUser.clearAll();
                 set({ user: null });
-                set({ username: '' });
-                set({ password: '' });
                 get().actions.setNotification({
                     text: `Logout successful!`, 
                     type: "success" 
@@ -114,14 +107,6 @@ const useBlogStore = create((set, get) => ({
                 });
             }
         },
-        handleUsernameChange: (event) => {
-            console.log(event.target.value);
-            set({ username: event.target.value });
-        },
-        handlePasswordChange: (event) => {
-            console.log(event.target.value);
-            set({ password: event.target.value });
-        },
     }
 }))
 
@@ -129,7 +114,5 @@ export const useBlogsListing = () => useBlogStore((state) => state.blogs)
 export const useNotification = () => useBlogStore((state) => state.notification)
 export const useStoreActions = () => useBlogStore((state) => state.actions)
 export const useKeptUsername = () => useBlogStore((state) => state.user)
-export const useUsernameData = () => useBlogStore((state) => state.username)
-export const usePasswordData = () => useBlogStore((state) => state.password)
 
 export default useBlogStore

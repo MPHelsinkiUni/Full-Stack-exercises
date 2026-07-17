@@ -1,12 +1,13 @@
 import { TextField, Button } from "@mui/material";
-import { useStoreActions, useUsernameData, usePasswordData } from "../store";
+import { useStoreActions } from "../store";
 import { useNavigate } from "react-router-dom";
+import { useField } from '../hooks';
 
 const LoginForm = () => {
-  const username = useUsernameData()
-  const password = usePasswordData()
+  const username = useField('text')
+  const password = useField('password')
   const navigate = useNavigate();
-  const { handlePasswordChange, handleUsernameChange, login } = useStoreActions()
+  const { login } = useStoreActions()
 
   const handleLogin = event => {
     const response = login(event)
@@ -21,18 +22,16 @@ const LoginForm = () => {
     <form onSubmit={handleLogin}>
       <div>
         <TextField
+          {...username}
           label="Username"
-          type="text"
-          value={username}
-          onChange={handleUsernameChange}
+          id="username"
         />
       </div>
       <div>
         <TextField
+          {...password}
           label="Password"
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
+          id="password"
         />
       </div>
       <Button type="submit" variant="contained" style={{ marginTop: 10 }}>

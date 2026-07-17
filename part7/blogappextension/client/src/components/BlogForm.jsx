@@ -1,45 +1,30 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button } from "@mui/material";
 import { useStoreActions } from "../store";
+import { useField } from '../hooks';
 
 const BlogForm = (user) => {
   const { setNotification, addBlog } = useStoreActions()
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
-  const [likes, setLikes] = useState("");
+  const title = useField('text');
+  const author = useField('text');
+  const url = useField('url');
+  const likes = useField('number');
   const navigate = useNavigate();
 
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const handleAuthorChange = (event) => {
-    setAuthor(event.target.value);
-  };
-
-  const handleUrlChange = (event) => {
-    setUrl(event.target.value);
-  };
-
-  const handleLikesChange = (event) => {
-    setLikes(event.target.value);
-  };
-
   const makeBlog = async (event) => {
+    console.log(event.target.title)
     try {
       event.preventDefault();
       await addBlog({
-        title: title,
-        author: author,
-        url: url,
-        likes: likes,
+        title: event.target.title.value,
+        author: event.target.author.value,
+        url: event.target.url.value,
+        likes: event.target.likes.value,
       }, user);
-      setUrl("");
-      setTitle("");
-      setLikes("");
-      setAuthor("");
+      title.onReset();
+      author.onReset();
+      url.onReset();
+      likes.onReset();
 
       navigate("/");
     } catch (error) {
@@ -57,37 +42,30 @@ const BlogForm = (user) => {
       <form onSubmit={makeBlog}>
         <div>
           <TextField
+            {...title}
             label="Title"
             id="title"
-            value={title}
-            onChange={handleTitleChange}
           />
         </div>
         <div>
           <TextField
+            {...author}
             label="Author"
-            type="text"
             id="author"
-            value={author}
-            onChange={handleAuthorChange}
           />
         </div>
         <div>
           <TextField
+            {...url}
             label="Url"
-            type="url"
             id="url"
-            value={url}
-            onChange={handleUrlChange}
           />
         </div>
         <div>
           <TextField
+            {...likes}
             label="Likes"
-            type="number"
             id="likes"
-            value={likes}
-            onChange={handleLikesChange}
           />
         </div>
         <Button type="submit" variant="contained" style={{ marginTop: 10 }}>
