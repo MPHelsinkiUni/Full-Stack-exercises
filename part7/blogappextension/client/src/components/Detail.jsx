@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { useStoreActions } from "../store";
+import { useKeptUsername, useStoreActions } from "../store";
 import {
   Card,
   Box,
@@ -10,14 +10,15 @@ import {
   Typography,
 } from "@mui/material";
 
-const Detail = ({ blogs, user, removeBlog }) => {
-  const { updateBlog } = useStoreActions()
+const Detail = ({ blogs }) => {
+  const { updateBlog, removeBlog } = useStoreActions()
   const id = useParams().id;
   const navigate = useNavigate();
   const blog = blogs.find((n) => n.id === id);
   if (!blog) {
     return <div>Loading. Please return to homepage before refreshing</div>;
   }
+  const user = useKeptUsername
   const login = user !== null;
   const owner = login && user.username === blog.user.username;
   const showWhenLogin = { display: login ? "" : "none" };

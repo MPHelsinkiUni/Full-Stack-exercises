@@ -1,12 +1,21 @@
 import { TextField, Button } from "@mui/material";
+import { useStoreActions, useUsernameData, usePasswordData } from "../store";
+import { useNavigate } from "react-router-dom";
 
-const LoginForm = ({
-  handleLogin,
-  handleUsernameChange,
-  handlePasswordChange,
-  username,
-  password,
-}) => (
+const LoginForm = () => {
+  const username = useUsernameData()
+  const password = usePasswordData()
+  const navigate = useNavigate();
+  const { handlePasswordChange, handleUsernameChange, login } = useStoreActions()
+
+  const handleLogin = event => {
+    const response = login(event)
+    if (response) {
+      navigate("/")
+    }
+  }
+
+  return (
   <div>
     <h1>Login</h1>
     <form onSubmit={handleLogin}>
@@ -31,6 +40,7 @@ const LoginForm = ({
       </Button>
     </form>
   </div>
-);
+)
+};
 
 export default LoginForm;
