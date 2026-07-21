@@ -10,14 +10,16 @@ import Notification from "./components/Notification";
 import ErrorBoundary from "./components/ErrorBoundary";
 import BadPath from "./components/BadPath";
 import Register from "./components/Register";
-import { useStoreActions, useBlogsListing, useKeptUsername } from "./store";
+import UserList from "./components/UserList";
+import { useStoreActions, useKeptUsername } from "./store";
 
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
+import DetailUser from "./components/DetailUser";
 
 const App = () => {
-  const blogs = useBlogsListing();
-  const { setNotification, initialize, setUser, logOut } = useStoreActions();
+  const { initialize, logOut } = useStoreActions();
   const loggedinUser = useKeptUsername();
+  const navigate = useNavigate();
 
   useEffect(() => {
     initialize();
@@ -27,11 +29,19 @@ const App = () => {
     padding: 5,
   };
 
+  const logOutHandler = async (event) => {
+    const success = await logOut();
+
+    if (success) {
+      navigate("/");
+    }
+  };
+
+  
   const style = { "&:hover": { bgcolor: "rgba(255,255,255,0.3)" } };
 
   return (
     <div>
-      <Router>
         <Container>
           <Notification />
 
@@ -66,7 +76,17 @@ const App = () => {
                 </Button>
               )}
               {loggedinUser && (
-                <Button color="inherit" onClick={logOut} to="/" sx={style}>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/users"
+                  sx={style}
+                >
+                  Users
+                </Button>
+              )}
+              {loggedinUser && (
+                <Button color="inherit" onClick={logOutHandler} to="/" sx={style}>
                   Logout
                 </Button>
               )}
@@ -78,7 +98,7 @@ const App = () => {
               path="/"
               element={
                 <ErrorBoundary>
-                  <BlogList blogs={blogs} />
+                  <BlogList />
                 </ErrorBoundary>
               }
             />
@@ -86,7 +106,15 @@ const App = () => {
               path="/blogs/:id"
               element={
                 <ErrorBoundary>
-                  <Detail blogs={blogs} />
+                  <Detail />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/users/:id"
+              element={
+                <ErrorBoundary>
+                  <DetailUser />
                 </ErrorBoundary>
               }
             />
@@ -100,14 +128,16 @@ const App = () => {
                 }
               />
             )}
-            <Route
-              path="/create"
-              element={
-                <ErrorBoundary>
-                  <BlogForm user={loggedinUser} />
-                </ErrorBoundary>
-              }
-            />
+            {loggedinUser && (
+              <Route
+                path="/create"
+                element={
+                  <ErrorBoundary>
+                    <BlogForm user={loggedinUser} />
+                  </ErrorBoundary>
+                }
+              />
+            )}
             <Route
               path="/register"
               element={
@@ -116,6 +146,16 @@ const App = () => {
                 </ErrorBoundary>
               }
             />
+            {loggedinUser && (
+              <Route
+                path="/users"
+                element={
+                  <ErrorBoundary>
+                    <UserList />
+                  </ErrorBoundary>
+                }
+              />
+            )}
             <Route
               path="*"
               element={
@@ -127,7 +167,6 @@ const App = () => {
           </Routes>
           <Footer />
         </Container>
-      </Router>
     </div>
   );
 };

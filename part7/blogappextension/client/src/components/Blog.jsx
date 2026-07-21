@@ -9,31 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 
-const Blog = ({ user, blog, updateBlog, removeBlog }) => {
+const Blog = ({ blog }) => {
   const [detailVisible, setDetailVisibility] = useState(false);
   const hideWhenVisible = { display: detailVisible ? "none" : "" };
   const showWhenVisible = { display: detailVisible ? "" : "none" };
-  const login = user !== null;
-  const owner = login && user.username === blog.user.username;
-  const showWhenLogin = { display: login ? "" : "none" };
-  const showWhenOwner = { display: owner ? "" : "none" };
-
-  const likeUp = (event) => {
-    event.preventDefault();
-    updateBlog(blog.id, {
-      user: blog.user.id,
-      title: blog.title,
-      author: blog.author,
-      likes: blog.likes + 1,
-      url: blog.url,
-    });
-  };
-
-  const remove = (event) => {
-    event.preventDefault();
-    removeBlog(blog);
-  };
-
+  
   return (
     <Box>
       <Card variant="outlined">

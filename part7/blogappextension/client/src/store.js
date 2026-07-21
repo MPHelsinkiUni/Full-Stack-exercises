@@ -6,12 +6,16 @@ import persistentUser from "./services/persistentUser";
 
 const useBlogStore = create((set, get) => ({
   blogs: [],
+  accounts: [],
   user: null,
   notification: { text: null, type: null },
   actions: {
     initialize: async () => {
       const blogs = await blogService.getAll();
       set(() => ({ blogs }));
+
+      const accounts = await userService.getAll();
+      set(() => ({ accounts }));
 
       const loggedUserJSON = persistentUser.getUser();
       if (loggedUserJSON) {
@@ -106,11 +110,13 @@ const useBlogStore = create((set, get) => ({
           text: `Logout successful!`,
           type: "success",
         });
+        return true;
       } catch (error) {
         get().actions.setNotification({
           text: `Logout issue. Please bother your local admin!`,
           type: "error",
         });
+        return false;
       }
     },
     register: async ({ username, password, name }) => {
@@ -123,7 +129,6 @@ const useBlogStore = create((set, get) => ({
         // await get().actions.login({ username: event.target.username.value, password: event.target.password.value });
         return true;
       } catch (error) {
-        console.log(error);
         get().actions.setNotification({
           text: error.response.data.error,
           type: "error",
@@ -131,10 +136,29 @@ const useBlogStore = create((set, get) => ({
         return false;
       }
     },
+    comment: async (id, comment) => {
+      try {
+        const response = await blogService.comment(id, comment);
+        console.log(response)
+        set((state) => ({
+          blogs: state.blogs.map((blog) =>
+            blog.id === id
+              ? { ...blog, comments: [...blog.comments, comment] }
+              : blog
+          ),
+        }));
+      } catch (error) {
+        get().actions.setNotification({
+          text: error.response.data.error,
+          type: "error",
+        });
+      }
+    }
   },
 }));
 
 export const useBlogsListing = () => useBlogStore((state) => state.blogs);
+export const useAccountsLogs = () => useBlogStore((state) => state.accounts);
 export const useNotification = () =>
   useBlogStore((state) => state.notification);
 export const useStoreActions = () => useBlogStore((state) => state.actions);
