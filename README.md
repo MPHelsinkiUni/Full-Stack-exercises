@@ -11,6 +11,7 @@ Exercises for the Full Stack Open program from the student this Github page belo
 | 4     | 1-26      |
 | 5     | 1-31      |
 | 6     | 1-22      |
+| 7     | 1-20      |
 
 # Additional resources and notes
 - Part 3 - phonebook - https://full-stack-exercises-fcw6.onrender.com/
